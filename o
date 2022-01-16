@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+    <!-- Remove the next line to disable mobile mode -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="provides measured tide prediction data in chart and table" />
+
+	<title>Tide Predictions - NOAA Tides & Currents</title>
+        
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/bootstrap-responsive.css" rel="stylesheet">
+    <link type="text/css" href="/css/chosen.css" rel="stylesheet" />
+    <link type="text/css" href="/css/frontpage.css" rel="stylesheet">
+    <link type="text/css" href="/css/plotting.css" rel="stylesheet"/>
+	<link href="/leaflet/leaflet.css" rel="stylesheet">
+    
+    <script type="text/javascript" src="/jquery-latest.js"></script>
+    <script type="text/javascript" src="/js/hoverintent.js"></script>
+    <script type="text/javascript" src="/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/menus_sub.js"></script>
+    <script type="text/javascript" src="/js/tac-common.js"></script>
+    
+    <script type="text/javascript" src="/js/calendarDateInput2.js"></script>
+	<script type="text/javascript" src="/leaflet/leaflet.js"></script>
+    <script type="text/javascript" src="/leaflet/esri-leaflet.js"></script>
+    <script type="text/javascript" src="/js/highcharts.js"></script>
+    <script type="text/javascript" src="/js/modules/exporting.js"></script>
+    <script type="text/javascript" src="/js/noaatidepredictions.js"></script>
+    <script type="text/javascript" src="/js/nearby.js"></script>
+    <script type="text/javascript" src="/js/chosen.jquery.js"></script>
+    
+    <!-- usasearch.gov -->
+    <script type="text/javascript">
+//<![CDATA[
+		var usasearch_config = { siteHandle:"tidesandcurrents" };
+      	var script = document.createElement("script");
+      	script.type = "text/javascript";
+      	script.src = "https://search.usa.gov/javascripts/remote.loader.js";
+      	document.getElementsByTagName("head")[0].appendChild(script);
+//]]>
+	</script>
+	<style type="text/css">
+		svg{
+			overflow:visible;
+		}
+		
+		.highcharts-container{
+			overflow:visible !important;
+		}
+		
+		.plotcover {
+			position: absolute;
+		}
+		
+		label {
+			cursor: auto;
+		}
+		
+		@media (max-width: 480px) {
+			#edate_ID_Link {
+				display: none;	
+			}
+			#edate_ID {
+				display: none;
+			}
+			
+			#bdate_ID_Link {
+				display: none;
+			}
+			
+			#bdate_ID {
+				display: none;
+			}
+		}
+    </style>
+</head>
+<body>
+	<link href="/css/tac-custom.css" rel="stylesheet" />
+
+<nav class="bodyfont">
+  <!-- Navigation starts -->
+  <div id="header" class="navbarbox navbarbottom">
+    <!-- Desktop Display -->
+    <div class="hidden-phone hidden-tablet">
+      <div id="buttoncontainer" class="container-fluid navi">
+        <div class="row-fluid" style="margin-left: 0; margin-right: 0;">
+          <!-- navigation logos-->
+          <div class="navbar-brand">
+            <a href="https://www.noaa.gov/"></a><img class="logoimg"
+              src="https://cdn.tidesandcurrents.noaa.gov/dev/assets/logos/logo_separate/noaa.jpg" alt="NOAA" />
+          </div>
+          <div class="navbar-brand">
+            <a href="/"><img class="logoimg"
+                src="https://cdn.tidesandcurrents.noaa.gov/dev/assets/logos/logo_separate/tidesandcurrentslogo.jpg"
+                alt="Tides &amp; Currents" /></a>
+          </div>
+          <!-- Right side navigation -->
+          <div class="floatboxright">
+            <!-- Home -->
+            <div class="span1 navi-item" id="homebutton">
+              <a href="/" class="navtext nav-underline">Home</a>
+            </div>
+            <!-- About Us -->
+            <div class="span1 navi-item panebutton" id="aboutbutton">
+              <a class="navtext nav-underline">About<span class="caret"></span></a>
+              <div id="about" class="pane about pulldown dropdownbox dropdownboxabout">
+                <div class="row-fluid">
+                  <div class="span12">
+                    <ul class="nav nav-list dropdownpadding">
+                      <li><a href="/about_us.html">Overview</a></li>
+                      <div class="dropdown-divider"></div>
+                      <li>
+                        <a href="/navigation_services.html">Navigation Services</a>
+                      </li>
+                      <div class="dropdown-divider"></div>
+                      <li>
+                        <a href="/coastal_hazards.html">Coastal Hazards</a>
+                      </li>
+                      <div class="dropdown-divider"></div>
+                      <li>
+                        <a href="/mapping_and_charting.html">Mapping and Charting</a>
+                      </li>
+                      <div class="dropdown-divider"></div>
+                      <li>
+                        <a href="/news/strategic-plan-2019-2023.html">Strategic Plan</a>
+                      </li>
+                      <div class="dropdown-divider"></div>
+                      <li><a href="/contact.html">Contact Us</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- What we Do -->
+            <div class="span1 navi-item panebutton" id="productbutton">
+              <a class="navtext nav-underline">What We Do<span class="caret"></span></a>
+              <div id="products" class="pane products pulldown dropdownbox">
+                <div id="productspacer" class="hidden-phone"></div>
+                <div class="row-fluid">
+                  <div class="span12">
+                    <ul class="nav nav-list dropdownpadding">
+                      <li>
+                        <a href="/water_level_info.html">Tides and Water Levels</a>
+                      </li>
+                      <div class="dropdown-divider"></div>
+                      <li><a href="/currents_info.html">Currents</a></li>
+                      <div class="dropdown-divider"></div>
+                      <li>
+                        <a href="/ports_info.html">PORTS<sup>®</sup></a>
+                      </li>
+                      <div class="dropdown-divider"></div>
+                      <li><a href="/hab_info.html">Harmful Algal Blooms</a></li>
+                      <div class="dropdown-divider"></div>
+                      <li>
+                        <a href="/sea_level_info.html">Sea Level and Coastal Flooding Information</a>
+                      </li>
+                      <div class="dropdown-divider"></div>
+                      <li>
+                        <a href="/met_info.html">Meteorological and Other Oceanographic Data</a>
+                      </li>
+                      <div class="dropdown-divider"></div>
+                      <li>
+                        <a href="/forecast_info.html" style="padding-right: 30px">Coastal and Great Lakes Conditions
+                          Forecast</a>
+                      </li>
+                      <div class="dropdown-divider"></div>
+                      <li><a href="/pub.html">CO-OPS Publications</a></li>
+                      <div class="dropdown-divider"></div>
+                      <li>
+                        <a href="/fieldlibrary/Welcome">CO-OPS Field Library</a>
+                      </li>
+                      <div class="dropdown-divider"></div>
+                      <li>
+                        <a href="/web_services_info.html">GIS and Web Services</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- News -->
+            <div class="span1 navi-item panebutton" id="partnerbutton">
+              <a href="/tac_news.html" class="navtext nav-underline">News</a>
+            </div>
+            <!-- Education -->
+            <div class="span1 navi-item panebutton" id="educationbutton">
+              <a class="navtext nav-underline">Education<span class="caret"></span></a>
+              <div id="education" class="pane education pulldown dropdownbox dropdownboxeducation">
+                <div class="row-fluid">
+                  <div class="span12">
+                    <ul class="nav nav-list dropdownpadding">
+                      <li>
+                        <a href="https://oceanservice.noaa.gov/education/tutorial_tides/welcome.html"
+                          target="_blank">Tides & Water Levels</a>
+                      </li>
+                      <div class="dropdown-divider"></div>
+                      <li>
+                        <a href="https://oceanservice.noaa.gov/education/tutorial_currents/welcome.html"
+                          target="_blank">Currents</a>
+                      </li>
+                      <div class="dropdown-divider"></div>
+                      <li>
+                        <a href="https://oceanservice.noaa.gov/education/pd/tidescurrents/welcome.html"
+                          target="_blank">For Teachers and Students</a>
+                      </li>
+                      <div class="dropdown-divider"></div>
+                      <li>
+                        <a href="/glossary.html">Tides and Currents Glossary</a>
+                      </li>
+                      <div class="dropdown-divider"></div>
+                      <li><a href="/faq2.html">FAQ</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Search Bar -->
+            <div class="hidden-phone searchfloat">
+              <form id="searchForm" name="searchForm" accept-charset="UTF-8" action="/search_results.html" method="get"
+                class="form-search searchbar">
+                <div style="margin: 0; padding: 0; display: inline">
+                  <input name="utf8" type="hidden" value="&#x2713;" />
+                </div>
+                <div class="controls">
+                  <div class="input-append">
+                    <input placeholder="Search" autocomplete="on" type="text"
+                      class="search-query searchboxtext form-control" id="query" name="query"
+                      aria-label="Search Text Box" />
+                    <button type="submit" class="btn btn-outline-success searchbutton"
+                      aria-label="Mobile Search Text Box">
+                      <img class="searchicon" src="https://cdn.tidesandcurrents.noaa.gov/dev/assets/icons/search.png"
+                        alt="Search Button" />
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- visible-phone navigation and search box show-->
+    <div class="visible-tablet visible-phone">
+      <div id="buttoncontainermobile" class="container-fluid navi">
+        <div class="row-fluid">
+          <!-- Logo Section-->
+          <a class="navbar-brand brand-custom" href="https://www.noaa.gov/">
+            <img class="logoimg" src="https://cdn.tidesandcurrents.noaa.gov/dev/assets/logos/logo_separate/noaa.jpg"
+              alt="NOAA" />
+          </a>
+          <a class="navbar-brand brand-custom" href="/">
+            <img class="logoimg"
+              src="https://cdn.tidesandcurrents.noaa.gov/dev/assets/logos/logo_separate/tidesandcurrentslogo.jpg"
+              alt="Tides &amp; Current" />
+          </a>
+          <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+          <a class="btn-navbar navbar-toggler" type="button" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="navbar-toggler-icon"></span>
+          </a>
+          <!-- Everything you want hidden at 940px or less, place within here -->
+          <div class="nav-collapse collapse collapse-box">
+            <!-- Search Bar -->
+            <div class="navbar-search navbarmobile-search" style="border: 0;">
+              <form id="searchForm2" name="searchForm2" accept-charset="UTF-8" action="/search_results.html"
+                method="get" class="form-search form-horizontal searchbox-mobile">
+                <div style="margin: 0; padding: 0; display: inline">
+                  <input name="utf8" type="hidden" value="&#x2713;" />
+                </div>
+                <div class="controls" style="margin-left: 0px;">
+                  <div class="input-append">
+                    <input placeholder="Search" autocomplete="on" type="text"
+                      class="search-query searchboxtext form-control" id="query2" name="query2"
+                      aria-label="Search Text Box" />
+                    <button type="submit" class="btn btn-outline-success searchbutton"
+                      aria-label="Mobile Search Text Box">
+                      <img class="searchicon" src="https://cdn.tidesandcurrents.noaa.gov/dev/assets/icons/search.png"
+                        alt="Search Button" />
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <!-- .nav, .navbar-search, .navbar-form, etc -->
+            <ul class="nav navbox-mobile">
+              <!-- About Us-->
+              <li class="dropdown dropdownbox">
+                <a class="dropdown-toggle dropdown-mobile" data-toggle="dropdown">About<span class="caret"></span></a>
+                <ul class="dropdown-menu dropdownbox-mobile">
+                  <li><a href="/about_us.html">Overview</a></li>
+                  <div class="dropdown-divider"></div>
+                  <li>
+                    <a href="/navigation_services.html">Navigation Services</a>
+                  </li>
+                  <div class="dropdown-divider"></div>
+                  <li><a href="/coastal_hazards.html">Coastal Hazards</a></li>
+                  <div class="dropdown-divider"></div>
+                  <li>
+                    <a href="/mapping_and_charting.html">Mapping and Charting</a>
+                  </li>
+                  <div class="dropdown-divider"></div>
+                  <li>
+                    <a href="/news/strategic-plan-2019-2023.html">Strategic Plan</a>
+                  </li>
+                  <div class="dropdown-divider"></div>
+                  <li><a href="/contact.html">Contact Us</a></li>
+                </ul>
+              </li>
+              <!-- What we Do -->
+              <li class="dropdown dropdownbox">
+                <a href="#" class="dropdown-toggle dropdown-mobile" data-toggle="dropdown">What We Do<span
+                    class="caret"></span></a>
+                <ul class="dropdown-menu dropdownbox-mobile megamenu">
+                  <li>
+                    <a href="/water_level_info.html">Tides and Water Levels</a>
+                  </li>
+                  <div class="dropdown-divider"></div>
+                  <li><a href="/currents_info.html">Currents</a></li>
+                  <div class="dropdown-divider"></div>
+                  <li>
+                    <a href="/ports_info.html">PORTS<sup>®</sup></a>
+                  </li>
+                  <div class="dropdown-divider"></div>
+                  <li><a href="/hab_info.html">Harmful Algal Blooms</a></li>
+                  <div class="dropdown-divider"></div>
+                  <li>
+                    <a href="/sea_level_info.html">Seal Level and Coastal Flooding Information</a>
+                  </li>
+                  <div class="dropdown-divider"></div>
+                  <li>
+                    <a href="/met_info.html">Meteorological and Other Oceanographic Data</a>
+                  </li>
+                  <div class="dropdown-divider"></div>
+                  <li>
+                    <a href="/forecast_info.html" style="padding-right: 30px">Coastal and Great Lakes Conditions
+                      Forecast</a>
+                  </li>
+                  <div class="dropdown-divider"></div>
+                  <li><a href="/pub.html">CO-OPS Publications</a></li>
+                  <div class="dropdown-divider"></div>
+                  <li>
+                    <a href="/fieldlibrary/Welcome">CO-OPS Field Library</a>
+                  </li>
+                  <div class="dropdown-divider"></div>
+                  <li>
+                    <a href="/web_services_info.html">GIS and Web Services</a>
+                  </li>
+                </ul>
+              </li>
+              <!-- News -->
+              <li><a class="dropdown-mobile" href="/tac_news.html">News</a></li>
+              <!-- Education -->
+              <li class="dropdown dropdownbox">
+                <a href="#" class="dropdown-toggle dropdown-mobile" data-toggle="dropdown">Education<span
+                    class="caret"></span></a>
+                <ul class="dropdown-menu dropdownbox-mobile">
+                  <li>
+                    <a href="https://oceanservice.noaa.gov/education/tutorial_tides/welcome.html" target="_blank">Tides
+                      & Water Levels</a>
+                  </li>
+                  <div class="dropdown-divider"></div>
+                  <li>
+                    <a href="https://oceanservice.noaa.gov/education/tutorial_currents/welcome.html"
+                      target="_blank">Currents</a>
+                  </li>
+                  <div class="dropdown-divider"></div>
+                  <li>
+                    <a href="https://oceanservice.noaa.gov/education/pd/tidescurrents/welcome.html" target="_blank">For
+                      Teachers and Students</a>
+                  </li>
+                  <div class="dropdown-divider"></div>
+                  <li>
+                    <a href="/glossary.html">Tides and Currents Glossary</a>
+                  </li>
+                  <div class="dropdown-divider"></div>
+                  <li><a href="/faq2.html">FAQ</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<div class="headlinebarnav"></div>
+
+<!-- End menu header -->
+<!-- Start the alert -->
+<!-- <div class="row-fluid">
+  <div class="alert span12 bodyfont sitewide-alert">
+    <div class="container">
+      <b>Notice:</b> On Wednesday, February 26th, starting at 1:30 p.m to 2:30
+      p.m. EST, there will be an IT system maintenance performed affecting the
+      <a style="font-weight: 500;" href="/">Tides and Currents</a> website.
+      During this time, the Tides and Currents website will be running with
+      limited capabilities. <br />
+      <span style="font-weight: 700;"
+        ><a href="/coop_notice.html">Click here for impacted products.</a></span
+      >
+    </div>
+  </div>
+</div> -->
+
+<!-- Begin storm alert panel -->
+<!-- End storm alert panel -->
+
+
+<!-- Alert End-->
+<!-- Start Div Content Container -->
+<div class="container-fluid custom-padding">
+  <!-- Breadcrumbs -->
+  <ul class="breadcrumb">
+    <li id="home"></li>
+  </ul>
+  <hr />
+  <!-- breadcrumb script-->
+  <script>
+    if (window.location.pathname == '/') {
+      //we're on index
+      $('#home').html('Tides & Currents Home');
+    } else {
+      $('#home').html('<a href="/">Home</a><span class="divider">/</span>');
+    }
+  </script>
+
+   	<!-- Page content starts here -->
+    <div class="row-fluid">
+    	<div class="span12">
+            <script type="text/javascript">
+var stations = new Array();
+var station_id = "8465705";
+var station_name = "New Haven";
+var station_state = "CT";
+var begin_date = "20200509";
+var end_date = "20200510";
+var datum = "MLLW";
+var datums = {
+  "accepted": "Apr 10 2018",
+  "superseded": "",
+  "epoch": "1983-2001",
+  "units": "feet",
+  "OrthometricDatum": "NAVD88",
+  "datums": [
+    {
+      "name": "STND",
+      "description": "Station Datum",
+      "value": 0.0
+    },
+    {
+      "name": "MHHW",
+      "description": "Mean Higher-High Water",
+      "value": 25.14
+    },
+    {
+      "name": "MHW",
+      "description": "Mean High Water",
+      "value": 24.82
+    },
+    {
+      "name": "DTL",
+      "description": "Mean Diurnal Tide Level",
+      "value": 21.78
+    },
+    {
+      "name": "MTL",
+      "description": "Mean Tide Level",
+      "value": 21.74
+    },
+    {
+      "name": "MSL",
+      "description": "Mean Sea Level",
+      "value": 21.75
+    },
+    {
+      "name": "MLW",
+      "description": "Mean Low Water",
+      "value": 18.66
+    },
+    {
+      "name": "MLLW",
+      "description": "Mean Lower-Low Water",
+      "value": 18.42
+    },
+    {
+      "name": "GT",
+      "description": "Great Diurnal Range",
+      "value": 6.72
+    },
+    {
+      "name": "MN",
+      "description": "Mean Range of Tide",
+      "value": 6.16
+    },
+    {
+      "name": "DHQ",
+      "description": "Mean Diurnal High Water Inequality",
+      "value": 0.32
+    },
+    {
+      "name": "DLQ",
+      "description": "Mean Diurnal Low Water Inequality",
+      "value": 0.24
+    },
+    {
+      "name": "HWI",
+      "description": "Greenwich High Water Interval (in hours)",
+      "value": 3.79
+    },
+    {
+      "name": "LWI",
+      "description": "Greenwich Low Water Interval (in hours)",
+      "value": 10.03
+    }
+  ],
+  "LAT": 17.1,
+  "LATdate": "19970208",
+  "LATtime": "22:48",
+  "HAT": 26.574,
+  "HATdate": "19931016",
+  "HATtime": "16:12",
+  "min": 15.184,
+  "mindate": "20180106",
+  "mintime": "01:24",
+  "max": 30.662,
+  "maxdate": "20121030",
+  "maxtime": "01:30",
+  "disclaimers": {
+    "disclaimers": [],
+    "self": null
+  },
+  "DatumAnalysisPeriod": [
+    "11/01/1999 - 10/31/2009",
+    "02/01/2012 - 01/31/2015",
+    "05/01/2015 - 04/30/2016",
+    "08/01/2016 - 07/31/2017"
+  ],
+  "NGSLink": "",
+  "ctrlStation": "8467150 Bridgeport, CT",
+  "self": "https://tidesandcurrents.noaa.gov/mdapi/v1.0/webapi/stations/8465705/datums.json"
+}.datums;
+var units = "standard";
+var clock = "12hour";
+var threshold = "";
+var thresholdvalue = "";
+var timezone = "LST/LDT";
+var interval = "hilo";
+var action = "dailychart";
+var subordinate = "false";
+var referenceName = "";
+var referenceID = "";
+var heightOffsetLowTide = "1";
+var heightOffsetHighTide = "0.92";
+var timeOffsetLowTide = "-6";
+var timeOffsetHighTide = "-1";
+var heightAdjustedType = "R";
+var refStationInfo = "";
+var timezonecorr = "-5";
+var isDst = "";
+var observesDST = "1";
+var type = "TidePredictions";
+</script>
+
+	<ul class="nav nav-tabs">
+		<li class="dropdown ">
+			<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+				Station Info<b class="caret"></b>
+			</a>
+			<ul class="dropdown-menu">
+				<li><a href="/stationhome.html?id=8465705">Station Home Page <i class="icon-home" style="background-image: url('/img/glyphicons-halflings.png')"></i></a></li>
+				<li><a href="/inventory.html?id=8465705">Data Inventory</a></li>
+			</ul>
+		</li>
+		<li class="dropdown active">
+			<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+				Tides/Water Levels<b class="caret"></b>
+			</a>
+			<ul class="dropdown-menu">
+				<li><a href="/waterlevels.html?id=8465705">Water Levels</a></li>
+				<li><a href="/harcon.html?id=8465705">Harmonic Constituents</a></li>
+				<li><a href="/datums.html?id=8465705">Datums</a></li>
+				<li><a href="/benchmarks.html?id=8465705">Bench Mark Sheets</a></li>
+				<li><a href="/noaatidepredictions.html?id=8465705">NOAA Tide Predictions</a></li>
+				<li class="disabled"><a>Sea Level Trends</a></li>
+				<li class="disabled"><a>Extreme Water Levels</a></li>
+				<li><a href="/reports.html?id=8465705">Reports</a></li>
+			</ul>
+		</li>
+		<li class="">
+			<a id="metlink" href="/met.html?id=8465705">Meteorological Obs.</a>
+		</li>
+		<li class="">
+			<a href="/physocean.html?id=8465705">Phys. Oceanography</a>
+		</li><li class="">
+<a href="/ports/ports.html?id=8465705">PORTS<sup>&reg;</sup></a>
+</li>
+</ul>
+<div class="row-fluid">
+	<div class="span6" style="text-align:left">
+		
+		<a href='/tide_predictions.html'>Back to Station Listing</a> &nbsp;|&nbsp; <a href='noaatidepredictionshelp.html'>Help</a>
+	</div>
+	<div class="span6 control-group" style="text-align:right">
+		<a class="btn btn-primary btn-sm" style="cursor:hand;position:relative;" target='_blank' onclick="createPrinterViewPage();">Printer View</a>&nbsp;&nbsp;
+		<a href="/noaatideannual.html?id=8465705" class="btn btn-primary btn-sm" style="cursor:hand;position:relative;">Click Here for Annual Published Tide Tables</a>
+	</div>
+</div>
+<!-- Plot container -->
+<div class="row-fluid" id="plotrow">
+	<div class="span9">
+		<div id="container">Loading...</div>
+		<div class="plotcover progress progress-striped active" id="wlcover">
+			<div class="bar" style="width: 100%;"></div>
+		</div>
+	</div>
+	<br><br><br><br>
+	<div class="span3 well"><b>Today's Tides (LST/LDT)</b><div style='margin: auto; text-align: center; position: relative;'><img src='/images/tidelow2.png' alt='graphical depiction of low tide' style='border: 1px solid black; padding: 5px; background-color: white; margin-top: 10px; margin-bottom: 10px;'><div style='position: absolute; margin: auto; text-align: center; width: 100%; top: 35px; height: 40px; text-align: center;'><span style='color: black; font-weight: bold; font-size: 18px;'>12:57 AM</span><br><span style='color: black; font-weight: bold; font-size: 12px;'>high</span></div><table class='table table-condensed' style='margin-bottom: 0px;'><tr><td>12:07 AM</td><td>high </td><td>7.95 ft.</td></tr><tr><td>6:33 AM</td><td>low </td><td>-1.03 ft.</td></tr><tr><td>12:42 PM</td><td>high </td><td>6.96 ft.</td></tr><tr><td>6:45 PM</td><td>low </td><td>-0.23 ft.</td></tr></table></div></div>
+</div>
+<div class="row-fluid" id="monthlyplot" style="display:none">
+	<div class="row-fluid">
+		<div class="span12" style="text-align: center; font-size: 12px;"><b>NOAA/NOS/CO-OPS<br>Tide Predictions at 8465705, New Haven CT<br>May 2020 Monthly Calendar View <br></b></div>
+	</div>
+	<div class="row-fluid">
+		<div class="span12">
+			<table border="1" style="width:100%;">
+				<tr style="font-size: 100%;">
+					<th>Sun</th>
+					<th>Mon</th> 
+					<th>Tue</th>
+					<th>Wed</th>
+					<th>Thu</th> 
+					<th>Fri</th>
+					<th>Sat</th>
+				</tr>
+				<tr>
+					<td id="tabledata0" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata1" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata2" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata3" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata4" style="width: 14.2%; height: 30px;"></td> 
+					<td id="tabledata5" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata6" style="width: 14.2%; height: 30px;"></td>
+				</tr>
+				<tr>
+					<td id="tabledata7" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata8" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata9" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata10" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata11" style="width: 14.2%; height: 30px;"></td> 
+					<td id="tabledata12" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata13" style="width: 14.2%; height: 30px;"></td>
+				</tr>
+				<tr>
+					<td id="tabledata14" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata15" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata16" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata17" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata18" style="width: 14.2%; height: 30px;"></td> 
+					<td id="tabledata19" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata20" style="width: 14.2%; height: 30px;"></td>
+				</tr>
+				<tr>
+					<td id="tabledata21" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata22" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata23" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata24" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata25" style="width: 14.2%; height: 30px;"></td> 
+					<td id="tabledata26" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata27" style="width: 14.2%; height: 30px;"></td>
+				</tr>
+				<tr id="secondToLastRow">
+					<td id="tabledata28" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata29" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata30" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata31" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata32" style="width: 14.2%; height: 30px;"></td> 
+					<td id="tabledata33" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata34" style="width: 14.2%; height: 30px;"></td>
+				</tr>
+				<tr id="lastRow">
+					<td id="tabledata35" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata36" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata37" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata38" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata39" style="width: 14.2%; height: 30px;"></td> 
+					<td id="tabledata40" style="width: 14.2%; height: 30px;"></td>
+					<td id="tabledata41" style="width: 14.2%; height: 30px;"></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+<br>
+
+<div class="well" style="padding-top: 13px; padding-bottom: 0px;">
+	<div class="row-fluid">
+		<form class="" style="margin: 0px;" method="GET" id="plotform">
+		<fieldset>
+		<div class="span4 control-group">
+			<div class="controls">
+				<div style="height: 64px;">
+					<label class="control-label" for="stationselect">Options for</label>
+					<select id="stationselect" onchange="changestation(this.value.substring(0, 7));"></select>
+				</div>
+				<label class="control-label" for="bdate">From:</label>
+				<script>var beginjs = DateInput('bdate', true, 'YYYYMMDD',"20200509")</script>
+				<noscript>format: yyyymmdd <input type="text" id="bdate" name="bdate" size="8" value="20200509"/></noscript>
+
+				<label class="control-label" for="edate">To:</label>
+				<script>var endjs = DateInput('edate', true, 'YYYYMMDD',"20200510")</script>
+				<noscript>format: yyyymmdd <input type="text" id="edate" name="edate" size="8" value="20200510"/></noscript>
+				<p class="text-warning">Note: The maximum range is 31 days.</p>
+			</div>
+		</div>
+		<div class="span4 control-group">
+			<div class="controls">
+				<label class="control-label" for="units">Units</label>
+				<select name="units" id="units" style="width: 100px;">
+					<option value="standard" selected>Feet</option><option value="metric">Meters</option>
+				</select>
+			
+				<label class="control-label" for="timezone">Timezone</label>
+				<select name="timezone" id="timezone" style="width: 100px;">
+    				
+		<option >GMT</option>
+		<option >LST</option>
+		<option selected>LST/LDT</option>
+	
+				</select>
+				
+				<label class="control-label" for="datum">Datum <a href="datum_options.html" target="_blank"><i class="icon-question-sign"></i></a></label>
+				<select name="datum" style="width: 100px;" id="datum" size="1">   
+    				<option value="STND" >STND</option><option value="MHHW" >MHHW</option><option value="MHW" >MHW</option><option value="MTL" >MTL</option><option value="MSL" >MSL</option><option value="MLW" >MLW</option><option value="MLLW" selected>MLLW</option>
+				</select>
+			
+				<input type="hidden" name="id" value="8465705"/>
+	  			<input type="hidden" name="name" value="New Haven"/>
+  				<input type="hidden" name="state" value="CT"/>
+				<input type="hidden" id="forminterval" name="interval" value="hilo"/>
+			
+				<label class="control-label" for="clock">12 Hour/24 Hour Clock</label>
+				<select name="clock" id="clock" style="width: 100px;">
+					<option value="12hour" selected>12 Hour</option><option value="24hour">24 Hour</option>
+				</select>
+				
+				<label class="control-label" id="intervallabel">Data Interval</label>
+				<select name="interval" id="interval" style="width: 100px;">
+					
+	<option id='interval1' value='1' >1 min</option>
+	<option id='interval6' value='6' >6 min</option>
+	<option id='interval15' value='15' >15 min</option>
+	<option id='interval30' value='30' >30 min</option>
+	<option id='intervalh' value='h' >1 hour</option>
+	<option id='intervalhilo' value='hilo' selected>High/Low</option>
+	<option id='intervalhi' value='hi' >High Only</option>
+	<option id='intervallo' value='lo' >Low Only</option>
+
+				</select>
+			
+			</div>
+		</div>
+		<div class="span4 control-group">
+			<div class="controls">
+				<label class="control-label">Shift Dates</label>
+				<div class="btn-group">
+					<button id="backbutton" onclick="scrollPlot('earlier'); return false;" class="btn"><i class="icon-step-backward"></i>Back 1 Day</button><button id="forwardbutton" onclick="scrollPlot('later'); return false;" class="btn"><i class="icon-step-forward"></i>Forward 1 Day</button>				
+				</div>
+				
+				<label class="control-label" for="threshold" style="margin-top: 10px;">Threshold Direction</label>
+				<select name="threshold" id="threshold" style="width: 100px;">
+    				<option value="lessThan"><=</option><option value="greaterThan" selected>>=</option>
+				</select>
+				
+				<label class="control-label" for="thresholdvalue">Threshold Value</label>
+				<input type="text" name="thresholdvalue" id="thresholdvalue" value="" style="width: 100px;"/>
+				
+				<br>
+				<label class="control-label">Update</label>
+				<button id="plotbutton" class="btn btn-primary" onclick="updateChart('daily'); return false;"><i class="icon-repeat icon-white"></i> Plot Daily</button><br>
+				<button id="monthlybutton" class="btn btn-primary" style="margin-top: 10px;" onclick="updateChart('monthly'); return false;"><i class="icon-repeat icon-white"></i> Plot Calendar</button><br>
+				<button id="databutton" class="btn btn-primary" style="margin-top: 10px;" onclick="updateChart('data'); return false;"><i class="icon-repeat icon-white"></i> Data Only</button>
+			</div>
+		</div>
+		</fieldset>
+		</form>
+	</div>	
+</div>
+
+<div id="data_container" class="row-fluid">
+	<div class="span12">
+		<div class="row-fluid">
+			<div class="span4"><b>Data Listing</b> </div>
+			<div class="span8">
+				<button class="btn btn-small pull-right" id="expand_listing" title="Expand the data listing"><i class="icon-resize-full"></i></button>
+				<a class="btn btn-small pull-right" style="margin-right: 4px;" id="data_listing_xml" title="Download data as xml" target="_blank" onclick="outputPredFile('xml');" download="8465705.xml" ><i class="icon-list-alt"></i> Download XML</a>
+				<a class="btn btn-small pull-right" style="margin-right: 4px;" id="data_listing_txt" title="Download data as text" target="_blank" onclick="outputPredFile('txt');" download="8465705.txt" ><i class="icon-list-alt"></i> Download TXT</a>
+				<a class="btn btn-small pull-right" style="margin-right: 4px;" id="source" title="Web Services" onclick="TAC.webservices(SourceURLs, $('#modal'))"><i class="icon-list-alt"></i> Web Services</a>
+			</div>
+		</div>
+		
+		<div id="data_listing" style="height:auto"></div>
+		<div class='alert' style='margin-top: 20px; margin-bottom: 20px;'>Disclaimer: These data are based upon the latest information available as of the date of your request, and may differ from the published tide tables. </div>
+		<div id="datum_warning"></div>
+		<div id="hilo_warning"></div>
+	</div>
+</div>
+
+<div id="disclaimer_row" class="row-fluid" style="display: none;">
+	<div class="span12">
+		<div class="alert" id="prelim_disclaimer" style="color: black; margin-top: 10px; margin-bottom: -5px;">
+			<button type="button" class="close" data-dismiss="alert">x</button>
+			These raw data have not been subjected to the National Ocean Service's quality control or quality assurance procedures and do not meet the criteria and standards of official National Ocean Service data. They are released for limited public use as preliminary data to be used only with appropriate caution.
+		</div>
+	</div>
+</div>
+
+<div id="apidisclaimers">
+	<!-- Disclaimers are inserted here by AJAX call to the CO-OPS Data API -->
+</div>
+<hr>
+ 
+<button id="maplink" class="btn"><i class="icon-map-marker"></i> Show nearby stations</button>
+
+<div class="row-fluid">
+	<div id="nearbycontent">
+		<div class="span3">
+			<div id="myDiv"></div>
+		</div>
+		<div class="span9">
+			<div class="maps" id="map">
+				<div id="map_canvas"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<hr>
+<h5>Products available at 8465705 New Haven, CT</h5>
+<div class="row-fluid">
+
+
+<div class="span4">
+
+	<ul class="nav nav-list">
+		<li class="nav-header">
+			Tides/Water Levels
+		</li>
+		<li class="">
+			<a href="/waterlevels.html?id=8465705">Water Levels</a>
+		</li>
+		<li class="active">
+			<a href="/noaatidepredictions.html?id=8465705">NOAA Tide Predictions</a>
+		</li>
+		<li class="">
+			<a href="/harcon.html?id=8465705">Harmonic Constituents</a>
+		</li>
+		<li class="disabled">
+			<a style="color: grey;">Sea Level Trends</a>
+		</li>
+		<li class="">
+			<a href="/datums.html?id=8465705">Datums</a>
+		</li>
+		<li class="">
+			<a href="/benchmarks.html?id=8465705">Bench Mark Sheets</a>
+		</li>
+		<li class="disabled">
+			<a style="color: grey;">Extreme Water Levels</a>
+		</li>
+		<li class="">
+			<a href="/reports.html?id=8465705">Reports</a>
+		</li>
+	</ul>				
+</div>            
+
+<div class="span4">
+	<ul class="nav nav-list">
+		<li class="nav-header">
+			Meteorological/Other
+		</li>
+		<li class="">
+			<a id="metlink2" href="/met.html?id=8465705">Meteorological Observations</a>
+		</li>
+		<li class="disabled">
+			<span style="color: grey;">Water Temp/Conductivity</span>
+		</li>
+		<li class="nav-header">
+			PORTS<sup>&reg;</sup>
+		<li>
+		<li class="">
+			<a href="/ports/index.html?port=nh">New Haven PORTS<sup>&reg;</sup></a>
+		</li>
+		<li>
+			<a href="/ports/ports.html?id=8465705">PORTS<sup>&reg;</sup> product page for New Haven</a>
+		</li>
+	</ul>
+</div>
+
+<div class="span4">
+	<ul class="nav nav-list">
+		<li class="nav-header">
+			Operational Forecast Systems
+		</li>
+		<li>
+			<span style="color: grey;">This station is not a member of OFS</span>
+		</li>
+		<li class="">
+			
+		</li>
+		<li class="nav-header">
+			Information
+		</li>
+		<li class="">
+			<a href="/stationhome.html?id=8465705">Station Home Page</a>
+		</li>
+		<li class="">
+			<a href="/inventory.html?id=8465705">Data Inventory</a>
+		</li>
+		<li>
+			<a href="/measure.html">Measurement Specifications</a>
+		</li>
+	</ul>
+</div>
+</div>
+
+<script type="text/javascript">
+	var bc = new breadcrumb();
+	bc.appendPath("<a href='products.html'>Products</a>");
+	bc.appendPath("<a href='tide_predictions.html'>NOAA Tide Predictions</a>");
+	bc.appendStation("8465705", "New Haven", "CT");
+	//Show the map when the map button is clicked.  Hide it if it's already visible.
+    var maptype = "wl";	 
+   	$("#maplink").click(function () {
+		showMap();
+   	});
+</script>
+
+
+            <div id="modal" class="modal hide fade" style=""></div>
+    	</div>
+    </div>
+    <!-- Page content ends here -->
+    
+    <hr>
+    <!-- Closing Div for Container-->
+
+</div>
+
+<!-- Footer section -->
+<div class='push'></div>
+<footer>
+	<div class="footer-container">
+  		<div class="row-fluid copyright_box">
+	  		<div class="container footer-wrapper">
+
+				<div class="copyright-p">
+					<h6 class="copyright-header" style="font-size: 1rem; font-weight: 500">Website Owner: Center for Operational Oceanographic Products and Services
+					</h6>
+					<p style="font-size: 14px">
+						<a class="copyrightText" href="http://www.noaa.gov">National Oceanic and Atmospheric Administration</a>
+						<a class="footerbox" style="margin: 0 1rem">•</a> 
+						<br class="break">
+						<a class="copyrightText" href="http://oceanservice.noaa.gov">National Ocean Service</a>
+						<a class="footerbox" style="margin: 0 1rem">•</a>
+						<br class="break">
+						<a class="copyrightText" href="/privacy.html">Privacy Policy</a>
+						<a class="footerbox" style="margin: 0 1rem">•</a>
+						<br>
+						<a class="copyrightText" href="/disclaimers.html">Disclaimer</a>
+						<a class="footerbox" style="margin: 0 1rem">•</a> 
+						<br class="break">
+						<a class="copyrightText" href="/survey.html">Take Our Survey </a>
+						<a class="footerbox" style="margin: 0 1rem">•</a> 
+						<br class="break">
+						<a class="copyrightText" href="https://www.noaa.gov/foia-freedom-of-information-act">Freedom of Information Act</a>
+						<a class="footerbox" style="margin: 0 1rem">•</a> 
+						<br class="break">
+						<a class="copyrightText" href="/contact.html">Contact Us</a>
+					</p>
+				</div>
+			</div>
+		</div>
+
+  	</div>
+</footer>
+
+
+
+
+
+<script src="/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="/js/hoverintent.js"></script>
+<script type="text/javascript" src="/js/chosen.jquery.js"></script>
+
+<script type="text/javascript"
+	src="/includes/federated-analytics.js?agency=DOC&subagency=NOAA&pua=UA-47217314-1" id ="_fed_an_ua_tag"></script>
+
+<!-- Search Bar autocomplete-->
+<script type="text/javascript" src="/js/jquery-ui-autocomplete-1.9.2.js"></script>
+<script type="text/javascript" src="/js/searchbox.js"></script>
+<script type="text/javascript" src="/js/custom_v1.js"></script>
+<script type="text/javascript" src="/js/js-bs4/scroller.js"></script>
+<script type="text/javascript">
+	/*<![CDATA[*/
+	(function()
+	
+	{ var sz = document.createElement('script'); sz.type = 'text/javascript'; sz.async = true; sz.src = '//siteimproveanalytics.com/js/siteanalyze_6017903.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(sz, s); })();
+	/*]]>*/
+</script>
+
+
+</body>
+
+</html>

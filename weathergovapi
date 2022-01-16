@@ -1,0 +1,6 @@
+https://api.weather.gov/points/41.313,-72.932
+Gets station
+New Haven: OKX 64 67
+
+https://api.weather.gov/gridpoints/OKX/64,67/forecast
+https://api.weather.gov/gridpoints/OKX/64,67

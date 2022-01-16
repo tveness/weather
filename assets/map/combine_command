@@ -1,0 +1,2 @@
+montage -density 300 -tile 3x3 -geometry +0+0 *.png out.png
+
